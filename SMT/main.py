@@ -134,7 +134,7 @@ for i in tqdm(range(len(instances))):
 
                         # Rectangle pair incompatibilities
                         if instance.get_circuit(c)[0] + instance.get_circuit(j)[0] > plate_width:
-                        # horizontal constraint
+                            # horizontal constraint
                             s.add(Implies(instance.get_circuit(c)[0] + instance.get_circuit(j)[0] > plate_width, lr[c][j] == False))
                             s.add(Implies(instance.get_circuit(j)[0] + instance.get_circuit(c)[0] > plate_width, lr[j][c] == False))
 

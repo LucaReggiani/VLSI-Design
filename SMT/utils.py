@@ -1,6 +1,7 @@
 import re
 import os
 import matplotlib.pyplot as plt
+from z3 import *
 
 # alphanumeric sorting of instances names
 def sorted_alphanumeric(data):
@@ -30,8 +31,7 @@ def add_non_overlapping_constraint(corners, widths, heights, c1, c2, non_overlap
         non_overlap.append(corners[c2][1] + heights[c2] <= corners[c1][1])
     return non_overlap
 
-    
-from z3 import *
+
 # be sure to non-overlap the rectangles with simmetry breaking enabled.
 # size can be either eidth or height
 def non_overlapping_constraint(solver, corners, size, c1, c2, flag):
