@@ -126,9 +126,9 @@ for i in tqdm(range(len(instances))):
 
                         # Non overlapping constraints
                         s.add((corners[c][0] + instance.get_circuit(c)[0] <= corners[j][0]) == lr[c][j])
-                        s.add((corners[c][1] + instance.get_circuit(c)[1] <= corners[j][1])== ud[c][j])
+                        s.add((corners[c][1] + instance.get_circuit(c)[1] <= corners[j][1]) == ud[c][j])
                         s.add((corners[j][0] + instance.get_circuit(j)[0] <= corners[c][0]) == lr[j][c])
-                        s.add((corners[j][1] + instance.get_circuit(j)[1] <= corners[c][1])== ud[j][c])
+                        s.add((corners[j][1] + instance.get_circuit(j)[1] <= corners[c][1]) == ud[j][c])
 
                         s.add(Or(lr[c][j], lr[j][c], ud[c][j], ud[j][c]))
 
@@ -148,7 +148,7 @@ for i in tqdm(range(len(instances))):
 
                         # Non overlapping constraints
                         s.add((corners[c][0] + instance.get_circuit(c)[0] <= corners[j][0]) == lr[c][j])
-                        s.add((corners[c][1] + instance.get_circuit(c)[1] <= corners[j][1])== ud[c][j])
+                        s.add((corners[c][1] + instance.get_circuit(c)[1] <= corners[j][1]) == ud[c][j])
                         s.add((corners[j][0] + instance.get_circuit(j)[0] <= corners[c][0]) == lr[j][c])
                         s.add((corners[j][1] + instance.get_circuit(j)[1] <= corners[c][1])== ud[j][c])
 
