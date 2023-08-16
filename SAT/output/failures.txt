@@ -6,3 +6,4 @@ Instance 40 failed
 SYMMETRY BREAKING: True
 Instance 38 failed
 Instance 40 failed
+SYMMETRY BREAKING: False

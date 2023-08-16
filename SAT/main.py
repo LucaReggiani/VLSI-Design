@@ -4,11 +4,12 @@ from instance import Instance
 import numpy as np
 from tqdm import tqdm
 from z3 import *
+
 '''
 terminal args
 '''
 folder_name = './input/'
-rotation = False
+rotation = True
 simmetry_breaking = False
 
 if rotation:
@@ -82,24 +83,54 @@ def add_3l_clause(instance, lrud, pxy, index_1, index_2, direction, plate_height
         """
         if direction == 'x':
             rectangle_measure = instance.get_circuit(index_1)[0]
+            other_rectangle_measure = instance.get_circuit(index_1)[1]
             strip_measure = instance.get_plate_width()
         elif direction == 'y':
             rectangle_measure = instance.get_circuit(index_1)[1]
+            other_rectangle_measure = instance.get_circuit(index_1)[0]
             strip_measure = plate_height
         else:
             print("The direction must be either 'x' or 'y'")
             return
 
-        #if rectangle 1 is left of rectangle 2, rectangle 2 cannot be at the left of the right edge of rectangle 1.
-        for k in range(rectangle_measure):
-            try:
-                s.add(Or(Not(lrud[index_1][index_2]), Not(pxy[index_2][k])))
-            except:
-                pass
+        if rotation:
+            
+            # do not allow rotation if rectangle height (width) is larger than strip width (height)
+            if other_rectangle_measure > strip_measure:
+                s.add(Not(rot_flags[index_1]))
 
-        for k in range(strip_measure - rectangle_measure):
-            k1 = k + rectangle_measure
-            s.add(Or(Not(lrud[index_1][index_2]), pxy[index_1][k], Not(pxy[index_2][k1])))
+            # force rotation if rectangle width (height) is larger than strip width (height)
+            if rectangle_measure > strip_measure:
+                s.add(rot_flags[index_1])
+
+            # no rotation
+            for k in range(min(rectangle_measure, strip_measure)):
+                
+                s.add(Implies(Not(rot_flags[index_1]),
+                                    Or(Not(lrud[index_1][index_2]), Not(pxy[index_2][k]))))
+                
+            for k in range(strip_measure - rectangle_measure):
+                k1 = k + rectangle_measure
+                s.add(Implies(Not(rot_flags[index_1]),
+                                    Or(Not(lrud[index_1][index_2]), pxy[index_1][k], Not(pxy[index_2][k1]))))
+            
+            # rotation
+            for k in range(min(other_rectangle_measure, strip_measure)):
+                s.add(Implies(rot_flags[index_1],
+                                    Or(Not(lrud[index_1][index_2]), Not(pxy[index_2][k]))))
+            for k in range(strip_measure - other_rectangle_measure):
+                k1 = k + other_rectangle_measure
+                s.add(Implies(rot_flags[index_1],
+                                    Or(Not(lrud[index_1][index_2]), pxy[index_1][k], Not(pxy[index_2][k1]))))
+                
+        else:
+            #if rectangle 1 is left of rectangle 2, rectangle 2 cannot be at the left of the right edge of rectangle 1.
+            for k in range(rectangle_measure):
+                s.add(Or(Not(lrud[index_1][index_2]), Not(pxy[index_2][k])))
+
+            for k in range(strip_measure - rectangle_measure):
+                k1 = k + rectangle_measure
+                s.add(Or(Not(lrud[index_1][index_2]), pxy[index_1][k], Not(pxy[index_2][k1])))
             
 
 def order_decode(encoding, vmin=0):
@@ -139,6 +170,10 @@ for i in tqdm(range(len(instances))):
     lr = [[Bool(f"lr_{h+1}_{j+1}") if h != j else 0 for j in range(instance.get_n_circuits())] for h in range(instance.get_n_circuits())]
     ud = [[Bool(f"ud_{h+1}_{j+1}") if h != j else 0 for j in range(instance.get_n_circuits())] for h in range(instance.get_n_circuits())]
 
+    if rotation:
+        # List of boolean flags, in order to understand if a specific circuit at a certain position is rotated or not.
+        rot_flags = [Bool(str(f)+"_rot") for f in range(instance.get_n_circuits())]
+
     # Loop in order to iterate the range of heights
     while solution_found == False and plate_height < instance.get_max_height() +1:
 
@@ -150,20 +185,57 @@ for i in tqdm(range(len(instances))):
         s.set(timeout = tmout)
 
         # Domain constraints
-        for cir in range(instance.get_n_circuits()):
-            for e in range(plate_width - instance.get_circuit(cir)[0], plate_width):
-                s.add(x_positions[cir][e])
+        if rotation:
+            for cir in range(instance.get_n_circuits()):
+                # no rotation
+                for e in range(plate_width - instance.get_circuit(cir)[0], plate_width):
+                    s.add(Implies(Not(rot_flags[cir]), x_positions[cir][e]))
+                
+                for f in range(plate_height - instance.get_circuit(cir)[1], plate_height):
+                    s.add(Implies(Not(rot_flags[cir]), y_positions[cir][f]))
+
+                # rotation
+                for e in range(plate_width - instance.get_circuit(cir)[1], plate_width):
+                    s.add(Implies(rot_flags[cir], x_positions[cir][e]))
+                
+                for f in range(plate_height - instance.get_circuit(cir)[0], plate_height):
+                    s.add(Implies(rot_flags[cir], y_positions[cir][f]))
+                
+                
+                if simmetry_breaking:
+                    widest_idx = np.argmax([instance.get_circuit(r)[0] * instance.get_circuit(r)[1] for r in range(instance.get_n_circuits())])
+
+
+                    # no rotation
+                    for e in range((plate_width - instance.get_circuit(widest_idx)[0]) // 2, plate_width - instance.get_circuit(widest_idx)[0]):
+                        s.add(Implies(Not(rot_flags[widest_idx]), x_positions[widest_idx][e]))
+
+                    for f in range((plate_height - instance.get_circuit(widest_idx)[1]) // 2, plate_height - instance.get_circuit(widest_idx)[1]):
+                        s.add(Implies(Not(rot_flags[widest_idx]), y_positions[widest_idx][f]))
+                        
+                    # rotation
+                    for e in range((plate_width - instance.get_circuit(widest_idx)[1]) // 2, plate_width - instance.get_circuit(widest_idx)[1]):
+                        s.add(Implies(rot_flags[widest_idx], x_positions[widest_idx][e]))
+
+                    for f in range((plate_height - instance.get_circuit(widest_idx)[0]) // 2, plate_height - instance.get_circuit(widest_idx)[0]):
+                        s.add(Implies(rot_flags[widest_idx], y_positions[widest_idx][f]))
+
+        else:
+
+            for cir in range(instance.get_n_circuits()):
+                for e in range(plate_width - instance.get_circuit(cir)[0], plate_width):
+                    s.add(x_positions[cir][e])
+                
+                for f in range(plate_height - instance.get_circuit(cir)[1], plate_height):
+                    s.add(y_positions[cir][f])
             
-            for f in range(plate_height - instance.get_circuit(cir)[1], plate_height):
-                s.add(y_positions[cir][f])
-            
-        if simmetry_breaking:
-            widest_idx = np.argmax([instance.get_circuit(r)[0] * instance.get_circuit(r)[1] for r in range(instance.get_n_circuits())])
-            for e in range((plate_width - instance.get_circuit(widest_idx)[0]) // 2, plate_width - instance.get_circuit(widest_idx)[0]):
-                s.add(x_positions[widest_idx][e])
-            
-            for f in range((plate_height - instance.get_circuit(widest_idx)[1]) // 2, plate_height - instance.get_circuit(widest_idx)[1]):
-                s.add(y_positions[widest_idx][f])
+                if simmetry_breaking:
+                    widest_idx = np.argmax([instance.get_circuit(r)[0] * instance.get_circuit(r)[1] for r in range(instance.get_n_circuits())])
+                    for e in range((plate_width - instance.get_circuit(widest_idx)[0]) // 2, plate_width - instance.get_circuit(widest_idx)[0]):
+                        s.add(x_positions[widest_idx][e])
+                    
+                    for f in range((plate_height - instance.get_circuit(widest_idx)[1]) // 2, plate_height - instance.get_circuit(widest_idx)[1]):
+                        s.add(y_positions[widest_idx][f])
             
             '''
             # ordering constraint
@@ -173,7 +245,7 @@ for i in tqdm(range(len(instances))):
                     s.add(Implies(x_positions[cir][e], x_positions[cir][e + 1]))
             '''
             '''
-            for f in range(self.H - self.rectangles[i].h - 1):
+            for f in range(self.H - rot_flagsectangles[i].h - 1):
                 s.add(Implies(self._py[i][f], self._py[i][f + 1]))
             '''
         # non-overlap constraints
@@ -227,9 +299,28 @@ for i in tqdm(range(len(instances))):
             py_eval = [[m.evaluate(y_positions[c][j], model_completion = True) for j in range(len(y_positions[c]))] for c in range(len(y_positions))]
             y_values = [order_decode(p) for p in py_eval]
 
-            circuits = [[instance.get_circuit(h)[0], instance.get_circuit(h)[1], x_values[h], y_values[h]] for h in range(instance.get_n_circuits())]
-            plot_solution(plate_width, plate_height, circuits, m, rotation, output_img_path+f'out-{i + 1}.png')
-            output_solution(circuits, plate_width, plate_height, rotation, m, output_txt_path+f'out-{i + 1}.txt')
+            if rotation:
+
+                circuits = []
+                for h in range(instance.get_n_circuits()):
+                    rotation_flag = m.evaluate(rot_flags[h], model_completion = True)
+                    if rotation_flag:
+                        rectangle_width = instance.get_circuit(h)[1]
+                        rectangle_height = instance.get_circuit(h)[0]
+                    else:
+                        rectangle_width = instance.get_circuit(h)[0]
+                        rectangle_height = instance.get_circuit(h)[1]
+                
+                    circuits.append([rectangle_width, rectangle_height, x_values[h], y_values[h]])
+                plot_solution(plate_width, plate_height, circuits, m, False, output_img_path+f'out-{i + 1}.png')
+                output_solution(circuits, plate_width, plate_height, False, m, output_txt_path+f'out-{i + 1}.txt')
+
+            else:
+
+                circuits = [[instance.get_circuit(h)[0], instance.get_circuit(h)[1], x_values[h], y_values[h]] for h in range(instance.get_n_circuits())]
+                plot_solution(plate_width, plate_height, circuits, m, rotation, output_img_path+f'out-{i + 1}.png')
+                output_solution(circuits, plate_width, plate_height, rotation, m, output_txt_path+f'out-{i + 1}.txt')
+
             solution_found = True
             end_time = time.time()
             print(f"Solution found for instance {i + 1}")
