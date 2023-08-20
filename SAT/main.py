@@ -65,16 +65,6 @@ if __name__ == '__main__':
         # starting timing operation
         start_time = time.time()
 
-        # list of booleans. If True, the circuit that is looping can be placed at that specific x-position, False otherwise
-        x_positions = [[Bool(f"px_{circuit_index+1}_{w}") for w in range(plate_width)] for circuit_index in range(instance.get_n_circuits())]
-        # list of booleans. If True, the circuit that is looping can be placed at that specific y-position, False otherwise
-        y_positions = [[Bool(f"py_{circuit_index+1}_{h}") for h in range(plate_height)] for circuit_index in range(instance.get_n_circuits())]
-
-        # list of booleans. If True, the circuit at index 1 is placed at the left of the circuit at index 2. False otherwise.
-        lr = [[Bool(f"LeftRight_{circuit_index_1+1}_{circuit_index_2+1}") if circuit_index_1 != circuit_index_2 else 0 for circuit_index_2 in range(instance.get_n_circuits())] for circuit_index_1 in range(instance.get_n_circuits())]
-        # list of booleans. If True, the circuit at index 1 is placed at the bottom of the circuit at index 2. False otherwise
-        ud = [[Bool(f"DownUp_{circuit_index_1+1}_{circuit_index_2+1}") if circuit_index_1 != circuit_index_2 else 0 for circuit_index_2 in range(instance.get_n_circuits())] for circuit_index_1 in range(instance.get_n_circuits())]
-
         if rotation:
             # List of boolean flags, in order to understand if a specific circuit at a certain position is rotated or not.
             rot_flags = [Bool(str(circuit_index)+"_rotation") for circuit_index in range(instance.get_n_circuits())]
