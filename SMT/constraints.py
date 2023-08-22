@@ -26,10 +26,9 @@ def check_rot_flags(instance, solver, plate_height):
             s.add(Not(rot_flags[cir]))
 
         # force rotation if rectangle width (height) is larger than strip width (height)
-        if instance.get_circuit(cir)[1] > plate_width:
+        if instance.get_circuit(cir)[0] > plate_width:
             s.add(rot_flags[cir])
 
-        
         # check height
         if instance.get_circuit(cir)[0] > plate_height:
             # do not allow rotation if rectangle height (width) is larger than strip width (height)
@@ -39,7 +38,7 @@ def check_rot_flags(instance, solver, plate_height):
         if instance.get_circuit(cir)[1] > plate_height:
             s.add(rot_flags[cir])
 
-#domain constraint
+# domain constraint
 def set_domain_constraints(instance, solver, plate_height):
 
     s = solver
@@ -47,7 +46,6 @@ def set_domain_constraints(instance, solver, plate_height):
     widths = instance.get_circuit_widths()
     heights = instance.get_circuit_heights()
     plate_width = instance.get_plate_width()
-    rotation = instance.get_rotation()
     simmetry_breaking = instance.get_simmetry_breaking()
 
     lr = instance.lr
@@ -64,14 +62,15 @@ def set_domain_constraints(instance, solver, plate_height):
         # Every Y coordinate of each circuit's corner + the height of the circuit must be <= the plate height
         s.add(corners[cir][1] + heights[cir] <= plate_height)
 
-        if simmetry_breaking:
+        # simmetry breaking in case of no rotation
+        if not instance.get_rotation() and simmetry_breaking:
             # Biggest circuit by Area
             widest_idx = np.argmax([instance.get_circuit(r)[0] * instance.get_circuit(r)[1] for r in range(instance.get_n_circuits())])
 
             # if c is the widest index, it should be as left as possible, with a small left-slide movement
             if cir == widest_idx:
-                s.add(corners[cir][0] <= (plate_width - widths[cir])/2)
-                s.add(corners[cir][1] <= (plate_height - heights[cir])/2)
+                s.add(corners[cir][0] <= (plate_width - widths[cir])//2)
+                s.add(corners[cir][1] <= (plate_height - heights[cir])//2)
             else:
                 # if the width of c is > the maximum slide allowed for the widest index 
                 # c cannot be placed on the left of the widest index
@@ -106,12 +105,9 @@ def set_non_overlap_constraints(instance, s, plate_height):
             s.add((corners[j][1] + heights[j] <= corners[cir][1]) == ud[j][cir])
 
             s.add(Or(lr[cir][j], lr[j][cir], ud[cir][j], ud[j][cir]))
-
+            
             if simmetry_breaking:
                 # Rectangle pair incompatibilities
-                # SR: Breaking symmetries for same-sized rectangles
-                s.add(Implies(And(widths[cir] == widths[j], heights[cir] == heights[j]), lr[j][cir] == False))
-                s.add(Implies(And(widths[cir] == widths[j], heights[cir] == heights[j]), ud[j][cir] == False))
 
                 # LR (horizontal)
                 s.add(Implies(widths[cir] + widths[j] > plate_width, lr[cir][j] == False))

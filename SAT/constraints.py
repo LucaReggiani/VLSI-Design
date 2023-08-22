@@ -3,12 +3,11 @@ import numpy as np
 
 
 
-def set_domain_constraints(instance, solver, plate_height):
+def set_domain_constraints(instance, s, plate_height):
     '''
     Set domain constraint. Because of these constraints, it is sure the circuits are going to suit the plate, by width and by height.
     '''
     plate_width = instance.get_plate_width()
-    s = solver
     rotation = instance.get_rotation()
     simmetry_breaking = instance.get_simmetry_breaking()
 
@@ -51,8 +50,6 @@ def set_domain_constraints(instance, solver, plate_height):
                 # We are setting to True the y-position of a circuit in order to allow it to "slide" vertically
                 for f in range((plate_height - instance.get_circuit(widest_idx)[1]) // 2, plate_height - instance.get_circuit(widest_idx)[1]):
                     s.add(Implies(Not(rot_flags[widest_idx]), y_positions[widest_idx][f]))
-
-
                     
                 # ---> the widest circuit has the flag "rotation" set to True. <---
 
@@ -81,7 +78,7 @@ def set_domain_constraints(instance, solver, plate_height):
                 for f in range((plate_height - instance.get_circuit(widest_idx)[1]) // 2, plate_height - instance.get_circuit(widest_idx)[1]):
                     s.add(y_positions[widest_idx][f])
 
-def add_3l_clause(instance, lrud, pxy, circuit_idx_1, circuit_idx_2, direction, plate_height, solver):
+def add_3l_clause(instance, lrud, pxy, circuit_idx_1, circuit_idx_2, direction, plate_height, s):
         """
         Add the normal 3-literal clause.
         I.e.
@@ -103,7 +100,6 @@ def add_3l_clause(instance, lrud, pxy, circuit_idx_1, circuit_idx_2, direction, 
             index of the second rectangle.
         """
 
-        s = solver
         rotation = instance.get_rotation()
         rot_flags = instance.get_rotation_flags()
 
@@ -184,10 +180,9 @@ def add_non_overlapping_constraint(instance, c, j, s, plate_height, to_add = [Tr
     s.add(Or(literals_4l))
 
 
-def set_non_overlap_constraints(instance, solver, plate_height):
+def set_non_overlap_constraints(instance, s, plate_height):
 
     plate_width = instance.get_plate_width()
-    s = solver
     simmetry_breaking = instance.get_simmetry_breaking()
 
     # non-overlap constraints

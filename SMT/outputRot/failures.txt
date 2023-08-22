@@ -1,3 +1,22 @@
+SYMMETRY BREAKING: True
+Instance 16 failed
+Instance 18 failed
+Instance 20 failed
+Instance 21 failed
+Instance 22 failed
+Instance 23 failed
+Instance 25 failed
+Instance 27 failed
+Instance 28 failed
+Instance 29 failed
+Instance 30 failed
+Instance 32 failed
+Instance 37 failed
+Instance 38 failed
+Instance 39 failed
+Instance 40 failed
+
+
 SYMMETRY BREAKING: False
 Instance 16 failed
 Instance 17 failed
@@ -14,31 +33,6 @@ Instance 28 failed
 Instance 30 failed
 Instance 32 failed
 Instance 33 failed
-Instance 35 failed
-Instance 36 failed
-Instance 37 failed
-Instance 38 failed
-Instance 39 failed
-Instance 40 failed
-
-SYMMETRY BREAKING: True
-Instance 11 failed
-Instance 16 failed
-Instance 18 failed
-Instance 19 failed
-Instance 20 failed
-Instance 21 failed
-Instance 22 failed
-Instance 25 failed
-Instance 26 failed
-Instance 28 failed
-Instance 29 failed
-Instance 30 failed
-Instance 31 failed
-Instance 32 failed
-Instance 33 failed
-Instance 35 failed
-Instance 36 failed
 Instance 37 failed
 Instance 38 failed
 Instance 39 failed

@@ -1,13 +1,13 @@
 
 SYMMETRY BREAKING: False
-Instance 30 failed
 Instance 32 failed
-Instance 37 failed
 Instance 38 failed
+Instance 39 failed
 Instance 40 failed
 
 SYMMETRY BREAKING: True
 Instance 32 failed
 Instance 37 failed
 Instance 38 failed
+Instance 39 failed
 Instance 40 failed

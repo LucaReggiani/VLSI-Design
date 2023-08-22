@@ -59,14 +59,6 @@ class Instance():
         # list of booleans. If True, the circuit at index 1 is placed at the bottom of the circuit at index 2. False otherwise
         self.ud = [[Bool(f"DownUp_{circuit_index_1+1}_{circuit_index_2+1}") if circuit_index_1 != circuit_index_2 else 0 for circuit_index_2 in range(self.get_n_circuits())] for circuit_index_1 in range(self.get_n_circuits())]
 
-
-    def set_y_positions(self, height):
-
-        self._min_height += 1
-
-        # list of booleans. If True, the circuit that is looping can be placed at that specific y-position, False otherwise
-        self._y_positions = [[Bool(f"py_{circuit_index+1}_{h}") for h in range(self._min_height)] for circuit_index in range(self.get_n_circuits())]
-
     def get_plate_width(self):
         '''
         Returning the instance width

@@ -7,14 +7,18 @@ from constraints import set_domain_constraints, set_non_overlap_constraints, che
 from utils import *
 
 
-def solve_instance(instance, solver, plate_height):
+def solve_instance(instance, solver, plate_height, add_constraints=True):
 
-    if rotation:
-        check_rot_flags(instance, solver, plate_height)
-        rotation_switch(instance, solver, plate_height)
+    # It enters here only if it is the first call. Otherwise, it is useless, because
+    # the constraints are already added to the solver.
+    if add_constraints:
 
-    set_domain_constraints(instance, solver, plate_height)
-    set_non_overlap_constraints(instance, solver, plate_height)
+        if rotation:
+            check_rot_flags(instance, solver, plate_height)
+            rotation_switch(instance, solver, plate_height)
+
+        set_domain_constraints(instance, solver, plate_height)
+        set_non_overlap_constraints(instance, solver, plate_height)
 
     result = solver.check()
 
@@ -29,7 +33,7 @@ def solve_instance(instance, solver, plate_height):
     else:
         plate_height += 1
         if plate_height < instance.get_max_height():
-            return solve_instance(instance, solver, plate_height)
+            return solve_instance(instance, solver, plate_height, add_constraints=False)
         else:
             return "Maximum Height exceeded"
 

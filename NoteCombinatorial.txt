@@ -1,0 +1,35 @@
+Topics di discussione con Andrea:
+
+    1) Min height max height (aggiustare solver in caso di aumento altezza)
+    2) constraints settati Fatto
+    3) simmetry breaking impostati Fatto(aggiustare codice applicando il primo simmetry breaking solo in caso di non rotazione + controllare primo constraimt prima function rotazione)
+    4) chiedere per rotation flag se è un simmetry break o no (secondo me no) FATTO
+    
+
+
+#################################################################
+                Report da consultare:
+#################################################################
+SAT --> Samuele M.
+SMT -> il debrando
+
+#################################################################
+                Todo list lato codice:
+#################################################################
+SMT part ---> cambiare codice e aggiungere Optimizer con minimizzazione della funzione obiettivo. In questo modo, possiamo togliere la funzione ricorsiva per trovare l'altezza minima.
+
+SAT Part --> cambiare nomi funzioni 3l-clause in constraint.py
+
+#################################################################
+                Cose da vedere/studiare per orale:
+#################################################################
+SAT Introduction --> informarsi su quali altri solvers esistono e le varie differenze con Z3. 
+
+
+#################################################################
+                Parole nuove da imparare usate nel report:
+#################################################################
+conundrum = enigma
+to revolve around = ruotare intorno
+quest = ricerca
+
