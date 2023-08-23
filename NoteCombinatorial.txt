@@ -16,9 +16,11 @@ SMT -> il debrando
 #################################################################
                 Todo list lato codice:
 #################################################################
-SMT part ---> cambiare codice e aggiungere Optimizer con minimizzazione della funzione obiettivo. In questo modo, possiamo togliere la funzione ricorsiva per trovare l'altezza minima.
+SMT part ---> 
+    1 ) cambiare codice e aggiungere Optimizer con minimizzazione della funzione obiettivo. In questo modo, possiamo togliere la funzione ricorsiva per trovare l'altezza minima. 
+    2 ) aggiustare simmetry breaking rettangolo più grande prendendo ispirazione da SAT
 
-SAT Part --> cambiare nomi funzioni 3l-clause in constraint.py
+SAT Part --> cambiare algoritmo per trovare altezza minima e massima
 
 #################################################################
                 Cose da vedere/studiare per orale:
@@ -32,4 +34,12 @@ SAT Introduction --> informarsi su quali altri solvers esistono e le varie diffe
 conundrum = enigma
 to revolve around = ruotare intorno
 quest = ricerca
+
+
+
+
+
+PAPER DA TROVARE
+Paper altezza ottima
+paper primo simmetry breaking
 

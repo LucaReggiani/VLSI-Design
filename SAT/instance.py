@@ -51,7 +51,7 @@ class Instance():
         # list of booleans. If True, the circuit that is looping can be placed at that specific y-position, False otherwise
         self._y_positions = [[Bool(f"py_{circuit_index+1}_{h}") for h in range(self._min_height)] for circuit_index in range(self.get_n_circuits())]
 
-        # List of boolean flags, in order to understand if a specific circuit at a certain position is rotated or not.
+        # List of boolean flags, in order to understand if a specific circuit is rotated or not.
         self._rot_flags = [Bool(str(circuit_index)+"_rotation") for circuit_index in range(self.get_n_circuits())]
 
         # list of booleans. If True, the circuit at index 1 is placed at the left of the circuit at index 2. False otherwise.

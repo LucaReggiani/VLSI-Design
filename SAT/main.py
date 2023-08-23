@@ -3,7 +3,7 @@ from tqdm import tqdm
 import time
 from instance import Instance
 from z3 import *
-from constraints import set_domain_constraints, set_non_overlap_constraints
+from constraints import set_domain_constraints, set_non_overlap_constraints, ordering_constraints
 from utils import *
 
 
@@ -13,7 +13,7 @@ def solve_instance(instance, solver, plate_height, add_constraints=True):
     # the constraints are already added to the solver.
     if add_constraints:
         set_domain_constraints(instance, solver, plate_height)
-
+        ordering_constraints(instance, solver, plate_height)
         set_non_overlap_constraints(instance, solver, plate_height)
 
     result = solver.check()

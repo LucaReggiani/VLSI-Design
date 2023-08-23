@@ -5,4 +5,4 @@ Instance 40 failed
 SYMMETRY BREAKING: True
 Instance 32 failed
 Instance 38 failed
-Instance 40 failed 
+Instance 40 failed
