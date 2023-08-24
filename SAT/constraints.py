@@ -80,27 +80,16 @@ def set_domain_constraints(instance, s, plate_height):
 
 def ordering_constraints(instance, s, plate_height):
     plate_width = instance.get_plate_width()
-    rotation = instance.get_rotation()
 
     x_positions = instance.get_x_positions()
     y_positions = instance.get_y_positions()
 
-    if rotation:
+    for cir in range(instance.get_n_circuits()):
+        for e in range(plate_width - 1):
+            s.add(Implies(x_positions[cir][e], x_positions[cir][e + 1]))
 
-        for cir in range(instance.get_n_circuits()):
-            for e in range(plate_width - 1):
-                s.add(Implies(x_positions[cir][e], x_positions[cir][e + 1]))
-
-            for f in range(plate_height - 1):
-                s.add(Implies(y_positions[cir][f], y_positions[cir][f + 1]))
-    else:
-
-        for cir in range(instance.get_n_circuits()):
-            for e in range(plate_width - instance.get_circuit(cir)[0] - 1):
-                s.add(Implies(x_positions[cir][e], x_positions[cir][e + 1]))
-
-            for f in range(plate_height - instance.get_circuit(cir)[1] - 1):
-                s.add(Implies(y_positions[cir][f], y_positions[cir][f + 1]))
+        for f in range(plate_height - 1):
+            s.add(Implies(y_positions[cir][f], y_positions[cir][f + 1]))
 
 
 def add_3l_clause(instance, lrud, pxy, circuit_idx_1, circuit_idx_2, direction, plate_height, s):

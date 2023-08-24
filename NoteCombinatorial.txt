@@ -23,6 +23,11 @@ SMT part --->
 SAT Part --> cambiare algoritmo per trovare altezza minima e massima
 
 #################################################################
+                Todo list lato report:
+#################################################################
+SAT Part --> guardare report samu e miky per variabili: aggiungere immagine + domini.
+
+#################################################################
                 Cose da vedere/studiare per orale:
 #################################################################
 SAT Introduction --> informarsi su quali altri solvers esistono e le varie differenze con Z3. 
