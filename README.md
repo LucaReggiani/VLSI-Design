@@ -43,6 +43,8 @@ To compute CP, SAT and SMT solutions, open your terminal and run ``main.py``, op
 
 For a detailed explanation of these parameters, consult our report.
 
+Regarding CP, if you want to directly run it, it is also necessary to move all the files inside the src folder out of it and inside the main CP folder.
+
 ### MIP
 To compute MIP solutions you can run ``main.py`` or ``main_rot.py`` depending on if you want the standard or rotation model, optionally providing input parameters such as:
 
@@ -50,6 +52,8 @@ To compute MIP solutions you can run ``main.py`` or ``main_rot.py`` depending on
 - folder_name.
 
 For a detailed explanation of these parameters, consult our report.
+
+Furthermore, if you want to directly run the MIP project, it is also necessary to move all the files inside the src folder out of it and inside the main MIP folder.
 
 ## Visualization
 You can explore the results in the out and outRot folders. The img directory houses visual representations, while textual solutions reside in the txt folder.
