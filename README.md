@@ -17,8 +17,8 @@ To install it:
 pip install z3-solver
 ```
 
-### CP and IMP
-For those who want to compute the CP and IMP solutions themselves, there's one more requirement:
+### CP 
+For those who want to compute the CP  solutions themselves, there's one more requirement:
 
  - ``minizinc``
 
@@ -29,12 +29,13 @@ pip install minizinc
 
 Additionally, you'll need a local installation of Minizinc.
 
-For IMP solutions, ensure you have both the ``guroby`` and ``CPLEX`` solvers integrated into your Minizinc setup.
+### MIP
+To compute MIP, you'll additionally need gurobi and gurobipy, which require a license.
 
 ## Getting Results
 
-### SAT and SMT
-To compute SAT and SMT solutions, open your terminal and run ``main.py``, optionally providing input parameters such as:
+### CP, SAT and SMT
+To compute CP, SAT and SMT solutions, open your terminal and run ``main.py``, optionally providing input parameters such as:
 
 - rotation;
 - simmetry_breaking;
@@ -42,8 +43,13 @@ To compute SAT and SMT solutions, open your terminal and run ``main.py``, option
 
 For a detailed explanation of these parameters, consult our report.
 
-### CP and IMP
-[Details about how to compute CP and IMP solutions go here.]
+### MIP
+To compute MIP solutions you can run ``main.py`` or ``main_rot.py`` depending on if you want the standard or rotation model, optionally providing input parameters such as:
+
+- simmetry_breaking;
+- folder_name.
+
+For a detailed explanation of these parameters, consult our report.
 
 ## Visualization
 You can explore the results in the out and outRot folders. The img directory houses visual representations, while textual solutions reside in the txt folder.
