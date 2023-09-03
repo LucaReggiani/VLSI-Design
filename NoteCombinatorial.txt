@@ -20,7 +20,6 @@ SMT part --->
     1 ) cambiare codice e aggiungere Optimizer con minimizzazione della funzione obiettivo. In questo modo, possiamo togliere la funzione ricorsiva per trovare l'altezza minima. 
     2 ) aggiustare simmetry breaking rettangolo più grande prendendo ispirazione da SAT
 
-SAT Part --> cambiare algoritmo per trovare altezza minima e massima
 
 #################################################################
                 Todo list lato report:
@@ -47,4 +46,19 @@ quest = ricerca
 PAPER DA TROVARE
 Paper altezza ottima
 paper primo simmetry breaking
+
+
+
+
+
+
+
+
+COSE DA FARE STASERA
+colorare di bianco barre = a 0 in bar histogram
+cambiare nomi funzioni constraint
+chiamare le cartelle sat come descritto nel progetto
+fare push.
+
+Codice SMT da aggiustare.
 
